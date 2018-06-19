@@ -2,12 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp">
+    android:background="@android:color/white"
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/id_dir_item_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -16,7 +17,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/id_dir_item_image"
         android:orientation="vertical">
 
@@ -25,22 +27,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="所有图片"
-            android:textSize="12sp" />
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/id_dir_item_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="122张"
-            android:textColor="#ccf"
-            android:textSize="10sp" />
+            android:textColor="#55000000"
+            android:textSize="13sp" />
     </LinearLayout>
-<ImageView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentRight="true"
-    android:layout_marginRight="20dp"
-    android:src="@drawable/dir_choose"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/dir_choose" />
 
 </RelativeLayout>

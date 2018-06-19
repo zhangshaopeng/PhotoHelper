@@ -1,4 +1,4 @@
-package com.project.peng.photohelper;
+package com.project.peng.photohelper.bean;
 
 /**
  * Describe：

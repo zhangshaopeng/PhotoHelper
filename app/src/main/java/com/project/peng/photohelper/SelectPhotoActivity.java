@@ -15,11 +15,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.GridView;
-import android.widget.ListPopupWindow;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.project.peng.photohelper.adapter.ImageAdapter;
+import com.project.peng.photohelper.bean.FolderBean;
+import com.project.peng.photohelper.utils.ListImagPop;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -29,7 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class SelectPhotoActivity extends AppCompatActivity {
     private GridView mGridView;
     private RelativeLayout mBottomly;
     private TextView mDirName, mDirCount;
@@ -53,64 +56,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void initPopupWindw() {
-        mDirPopupWindow = new ListImagPop(this, mFolderBean);
-        mDirPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                lightOn();
-            }
-        });
-        mDirPopupWindow.setOnDirSelectedListener(new ListImagPop.OnDirSelectedListener() {
-            @Override
-            public void onSelected(FolderBean folderBean) {
-                mCurrentDir = new File(folderBean.getDir());
-                mImgs = Arrays.asList(mCurrentDir.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File file, String filename) {
-                        if (filename.endsWith(".jpg")
-                                || filename.endsWith(".png")
-                                || filename.endsWith(".jpeg"))
-                            return true;
-                        return false;
-                    }
-                }));
-                mImageAdapter = new ImageAdapter(MainActivity.this, mImgs
-                        , mCurrentDir.getAbsolutePath());
-                mGridView.setAdapter(mImageAdapter);
-                mDirCount.setText(mImgs.size() + "");
-                mDirName.setText(folderBean.getName());
-                mDirPopupWindow.dismiss();
-            }
-        });
-    }
-
-    private void lightOn() {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = 1.0f;
-        getWindow().setAttributes(lp);
-
-    }
-
-    private void lightOff() {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = 1.3f;
-        getWindow().setAttributes(lp);
-
-    }
-
-    private void data2View() {
-        if (mCurrentDir == null) {
-            Toast.makeText(this, "为扫描到图片", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        mImgs = Arrays.asList(mCurrentDir.list());
-        mImageAdapter = new ImageAdapter(this, mImgs, mCurrentDir.getAbsolutePath());
-        mGridView.setAdapter(mImageAdapter);
-        mDirCount.setText(mMaxCount + "");
-        mDirName.setText(mCurrentDir.getName() + "");
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +65,25 @@ public class MainActivity extends AppCompatActivity {
         initEvent();
     }
 
+    /**
+     * 选中pop条目设置数据
+     */
+    private void data2View() {
+        if (mCurrentDir == null) {
+            Toast.makeText(this, "未扫描到图片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mImgs = Arrays.asList(mCurrentDir.list());
+        mImageAdapter = new ImageAdapter(this, mImgs, mCurrentDir.getAbsolutePath());
+        mGridView.setAdapter(mImageAdapter);
+        mDirCount.setText(mMaxCount + "张");
+        mDirName.setText(mCurrentDir.getName() + "");
+    }
+
+
+    /**
+     * 添加点击事件
+     */
     private void initEvent() {
         mBottomly.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("NewApi")
@@ -148,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 Uri mImgUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                ContentResolver cr = MainActivity.this.getContentResolver();
+                ContentResolver cr = SelectPhotoActivity.this.getContentResolver();
                 String s = MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "= ?";
-                Log.e("aaaa",s);
+                Log.e("aaaa", s);
                 Cursor cursor = cr.query(mImgUri, null,
                         MediaStore.Images.Media.MIME_TYPE + "= ? or " + MediaStore.Images.Media.MIME_TYPE + "= ?"
                         , new String[]{"image/jpeg", "image/png"}
@@ -214,5 +178,55 @@ public class MainActivity extends AppCompatActivity {
         mDirCount = findViewById(R.id.id_dir_count);
     }
 
+    /**
+     * 初始化pop
+     */
+    private void initPopupWindw() {
+        mDirPopupWindow = new ListImagPop(this, mFolderBean);
+        mDirPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                lightOn();
+            }
+        });
+        mDirPopupWindow.setOnDirSelectedListener(new ListImagPop.OnDirSelectedListener() {
+            @Override
+            public void onSelected(FolderBean folderBean) {
+                mCurrentDir = new File(folderBean.getDir());
+                mImgs = Arrays.asList(mCurrentDir.list(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File file, String filename) {
+                        if (filename.endsWith(".jpg")
+                                || filename.endsWith(".png")
+                                || filename.endsWith(".jpeg"))
+                            return true;
+                        return false;
+                    }
+                }));
+                mImageAdapter = new ImageAdapter(SelectPhotoActivity.this, mImgs
+                        , mCurrentDir.getAbsolutePath());
+                mGridView.setAdapter(mImageAdapter);
+                mDirCount.setText(mImgs.size() + "");
+                mDirName.setText(folderBean.getName());
+                mDirPopupWindow.dismiss();
+            }
+        });
+    }
 
+    /**
+     * pop的背景光暗颜色
+     */
+    private void lightOn() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 1.0f;
+        getWindow().setAttributes(lp);
+
+    }
+
+    private void lightOff() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 1.3f;
+        getWindow().setAttributes(lp);
+
+    }
 }

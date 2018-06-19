@@ -1,21 +1,19 @@
-package com.project.peng.photohelper;
+package com.project.peng.photohelper.utils;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
+
+import com.project.peng.photohelper.R;
+import com.project.peng.photohelper.adapter.ListDirAdapter;
+import com.project.peng.photohelper.bean.FolderBean;
 
 import java.util.List;
 
@@ -81,7 +79,6 @@ public class ListImagPop extends PopupWindow {
     private void initView(Context context) {
         mListview = mConvertView.findViewById(R.id.id_list_dir);
         mListview.setAdapter(new ListDirAdapter(context, mData));
-
     }
 
     /**
@@ -95,47 +92,5 @@ public class ListImagPop extends PopupWindow {
         wm.getDefaultDisplay().getMetrics(outMetrics);
         mWidth = outMetrics.widthPixels;
         mHeight = (int) (outMetrics.heightPixels * 0.7);
-
-
-    }
-
-    private class ListDirAdapter extends ArrayAdapter<FolderBean> {
-        private LayoutInflater mInflater;
-        private List<FolderBean> mDatas;
-
-        public ListDirAdapter(@NonNull Context context, List<FolderBean> mDatas) {
-            super(context, 0, mDatas);
-            mInflater = LayoutInflater.from(context);
-        }
-
-        @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            ViewHodler hodler = null;
-            if (convertView == null) {
-                hodler = new ViewHodler();
-                convertView = mInflater.inflate(R.layout.item_list, null);
-                hodler.mImg = convertView.findViewById(R.id.id_dir_item_image);
-                hodler.mDirCount = convertView.findViewById(R.id.id_dir_item_count);
-                hodler.mDirName = convertView.findViewById(R.id.id_dir_item_name);
-                convertView.setTag(hodler);
-            } else {
-                hodler = (ViewHodler) convertView.getTag();
-            }
-            FolderBean bean = getItem(position);
-            //重置
-            hodler.mImg.setImageResource(R.mipmap.ic_launcher);
-            ImageLoader.getInstace(3, ImageLoader.Type.LIFO).loadImage(bean.getFirstImagePath(), hodler.mImg);
-
-            hodler.mDirCount.setText(bean.getCount() + "");
-            hodler.mDirName.setText(bean.getName());
-            return convertView;
-        }
-
-        private class ViewHodler {
-            ImageView mImg;
-            TextView mDirName;
-            TextView mDirCount;
-        }
     }
 }
