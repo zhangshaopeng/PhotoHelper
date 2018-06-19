@@ -89,6 +89,7 @@ public class SelectPhotoActivity extends AppCompatActivity {
             @SuppressLint("NewApi")
             @Override
             public void onClick(View view) {
+                mDirPopupWindow.setAnimationStyle(R.style.pop);
                 mDirPopupWindow.showAsDropDown(mBottomly, 0, 0);
                 lightOff();
             }
@@ -206,7 +207,7 @@ public class SelectPhotoActivity extends AppCompatActivity {
                 mImageAdapter = new ImageAdapter(SelectPhotoActivity.this, mImgs
                         , mCurrentDir.getAbsolutePath());
                 mGridView.setAdapter(mImageAdapter);
-                mDirCount.setText(mImgs.size() + "");
+                mDirCount.setText(mImgs.size() + "张");
                 mDirName.setText(folderBean.getName());
                 mDirPopupWindow.dismiss();
             }
